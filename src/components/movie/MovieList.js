@@ -1,45 +1,41 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Swiper, SwiperSlide} from "swiper/react";
 import useSWR from "swr";
-import "swiper/scss";
 import MovieCard from "./MovieCard";
 import {fetcher} from "../../config";
 import {API_KEY} from "../../utils/Constant";
 
-// https://api.themoviedb.org/3/movie/now_playing?api_key=<<api_key>>
+// https://api.themoviedb.org/3/movie/now_playing?api_key=ea38c7f2f57ff22a3e179a8eceaea2bb&language=en-US&page=1
 
-const MovieList = () => {
-  const [movies, setMovies] = useState([]);
-  const {data, error, isLoading} = useSWR(
-    ` https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`,
+const MovieList = ({type = "now_playing"}) => {
+  // const [movies, setMovies] = useState([]);
+
+  // Now Playing
+  const {data} = useSWR(
+    ` https://api.themoviedb.org/3/movie/${type}?api_key=${API_KEY}&language=en-US&page=1`,
     fetcher
   );
-  //   console.log("DataFetching:", data);
-  useEffect(() => {
-    if (data) {
-      setMovies(data.results);
-    }
-  }, [data]);
-  console.log("movies:", movies);
+
+  const movies = data?.results || [];
+  // console.log("moviesFetching:", movies);
+
+  // useEffect(() => {
+  //   if (data) {
+  //     setMovies(data.results);
+  //   }
+  // }, [data]);
 
   return (
     <div className="movies-list">
       <Swiper grabCursor={"true"} spaceBetween={40} slidesPerView={"auto"}>
-        <SwiperSlide>
-          <MovieCard></MovieCard>
-        </SwiperSlide>
-        <SwiperSlide>
-          <MovieCard></MovieCard>
-        </SwiperSlide>
-        <SwiperSlide>
-          <MovieCard></MovieCard>
-        </SwiperSlide>
-        <SwiperSlide>
-          <MovieCard></MovieCard>
-        </SwiperSlide>
-        <SwiperSlide>
-          <MovieCard></MovieCard>
-        </SwiperSlide>
+        {movies.length > 0 &&
+          movies.map((movie) => {
+            return (
+              <SwiperSlide key={movie.id}>
+                <MovieCard movie={movie}></MovieCard>;
+              </SwiperSlide>
+            );
+          })}
       </Swiper>
     </div>
   );
