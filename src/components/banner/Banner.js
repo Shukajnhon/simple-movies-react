@@ -2,7 +2,7 @@ import React from "react";
 import useSWR from "swr";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {fetcher} from "../../config";
-import {API_KEY, URL_IMAGE} from "../../utils/Constant";
+import {API_KEY, URL_IMAGE_ORIGINAL} from "../../utils/Constant";
 const Banner = () => {
   const {data} = useSWR(
     ` https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`,
@@ -30,15 +30,13 @@ const Banner = () => {
 const BannerItem = ({movie}) => {
   //   console.log("MovieBanner:", movie);
   const {backdrop_path, title} = movie;
-  console.log("backdrop_path:", backdrop_path);
-  console.log("title:", title);
 
   return (
     <div className="w-full h-full rounded-lg relative">
       <div className="overlay absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.5)] to-[rgba(0,0,0,0.5)]rounded-lg"></div>
       <img
         className="w-full h-full object-cover rounded-lg object-top"
-        src={`${URL_IMAGE}${backdrop_path}`}
+        src={`${URL_IMAGE_ORIGINAL}${backdrop_path}`}
         alt=""
       />
       <div className="absolute left-5 bottom-5 w-full text-white">
