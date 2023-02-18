@@ -1,16 +1,20 @@
 import React from "react";
+import {useNavigate} from "react-router-dom";
 import {URL_IMAGE} from "../../utils/Constant";
 
 const MovieCard = ({movie}) => {
   const {
     title,
     vote_average,
-    // id,
+    id,
     // genre_ids,
     // overview,
     backdrop_path,
     release_date,
   } = movie;
+  // console.log(movie);
+
+  const navigate = useNavigate();
 
   return (
     <div className="movie-card flex flex-col rounded-lg p-3 bg-slate-800 text-white h-full">
@@ -25,7 +29,10 @@ const MovieCard = ({movie}) => {
           <span> {new Date(release_date).getFullYear()}</span>
           <span>{vote_average}</span>
         </div>
-        <button className="py-3 px-6 rounded-lg text-white bg-primary font-medium capitalize w-full mt-auto">
+        <button
+          onClick={() => navigate(`/movie/${id}`)}
+          className="py-3 px-6 rounded-lg text-white bg-primary font-medium capitalize w-full mt-auto"
+        >
           Watch now
         </button>
       </div>

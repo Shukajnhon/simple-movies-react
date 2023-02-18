@@ -6,7 +6,7 @@ const Main = () => {
   return (
     <Fragment>
       <Header></Header>
-      <Outlet></Outlet>;
+      <Outlet></Outlet>
     </Fragment>
   );
 };

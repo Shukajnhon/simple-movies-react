@@ -4,11 +4,13 @@ import {fetcher} from "../config";
 import {API_KEY} from "../utils/Constant";
 import MovieCard from "../components/movie/MovieCard";
 const MoviePage = () => {
+  // https://api.themoviedb.org/3/movie/popular?api_key=$ea38c7f2f57ff22a3e179a8eceaea2bb&language=en-US&page=1
   const {data} = useSWR(
     ` https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=1`,
     fetcher
   );
-  const movies = data.results || [];
+  const movies = data?.results || [];
+  // console.log(movies);
   return (
     <div className="py-10 page-container">
       <div className="flex mb-10">
@@ -27,7 +29,6 @@ const MoviePage = () => {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            class="w-6 h-6"
           >
             <path
               strokeLinecap="round"

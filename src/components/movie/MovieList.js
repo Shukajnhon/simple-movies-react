@@ -32,7 +32,7 @@ const MovieList = ({type = "now_playing"}) => {
           movies.map((movie) => {
             return (
               <SwiperSlide key={movie.id}>
-                <MovieCard movie={movie}></MovieCard>;
+                <MovieCard movie={movie}></MovieCard>
               </SwiperSlide>
             );
           })}
