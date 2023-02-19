@@ -1,6 +1,8 @@
 import React, {Fragment} from "react";
 import {useParams} from "react-router-dom";
+import {Swiper, SwiperSlide} from "swiper/react";
 import useSWR from "swr";
+import MovieCard from "../components/movie/MovieCard";
 import {fetcher} from "../config";
 import {
   API_KEY,
@@ -66,6 +68,8 @@ const MovieDetailPage = () => {
         {/* <video src={`${URL_MOVIE_TRAILER}Hj1vP05HGOg`}></video> */}
 
         <MovieVideo></MovieVideo>
+
+        <MovieSimilar></MovieSimilar>
       </div>
     </Fragment>
   );
@@ -85,11 +89,8 @@ const MovieCredits = () => {
   const {cast} = data;
   if (!cast || cast.length <= 0) return null;
 
-  // console.log("cast: ", cast);
-  // console.log("profile_path: ", profile_path);
-  // console.log("characters: ", data);
   return (
-    <>
+    <div className="py-10">
       <h2 className="text-center text-4xl mb-10">CASTS</h2>
       <div className="grid grid-cols-4 gap-5">
         {cast.slice(0, 4).map((item) => {
@@ -105,7 +106,7 @@ const MovieCredits = () => {
           );
         })}
       </div>
-    </>
+    </div>
   );
 };
 
@@ -117,20 +118,66 @@ const MovieVideo = () => {
   );
 
   if (!data) return null;
-  console.log(data);
+  const {results} = data;
+  if (!results || results.length <= 0) return null;
   return (
-    <div className="w-full h-[400px]">
-      {/* <iframe src={`${URL_MOVIE_TRAILER}Hj1vP05HGOg`}></iframe> */}
+    <div className="py-10">
+      {/* <iframe src={`${URL_MOVIE_TRAILER}Hj1vP05HGOg`}></iframe>  9zvgGSTZlOY*/}
 
-      <iframe
-        width="560"
-        height="315"
-        src={`${URL_MOVIE_TRAILER}9zvgGSTZlOY`}
-        title="YouTube video player"
-        // frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowFullScreen
-      ></iframe>
+      {results.slice(0, 1).map((item) => {
+        return (
+          <div
+            key={item.id}
+            className="flex justify-center items-center flex-col"
+          >
+            <h3 className="mb-5 text-xl font-medium p-3 bg-secondary inline-block rounded-sm">
+              {item.name}
+            </h3>
+            <div className="w-full aspect-auto">
+              <iframe
+                className=" w-full object-fill"
+                width="864"
+                height="600"
+                src={`${URL_MOVIE_TRAILER}${item.key}`}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const MovieSimilar = () => {
+  // https://api.themoviedb.org/3/movie/{movie_id}/similar?api_key=<<api_key>>&language=en-US&page=1
+
+  const {movieId} = useParams();
+  const {data} = useSWR(
+    `${URL_MOVIE}/movie/${movieId}/similar?api_key=${API_KEY}&language=en-US`,
+    fetcher
+  );
+  if (!data) return null;
+  const {results} = data;
+  if (!results || results <= 0) return null;
+  console.log("similar:", data);
+  return (
+    <div className="py-10">
+      <h2 className="text-3xl font-medium mb-10">Similar Movies</h2>
+      <div className="movies-list">
+        <Swiper grabCursor={"true"} spaceBetween={40} slidesPerView={"auto"}>
+          {results.map((movie) => {
+            return (
+              <SwiperSlide key={movie.id}>
+                <MovieCard movie={movie}></MovieCard>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
     </div>
   );
 };
