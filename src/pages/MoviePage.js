@@ -10,7 +10,9 @@ const MoviePage = () => {
 
   // https://api.themoviedb.org/3/search/movie?api_key=<<api_key>>&language=en-US&page=1&include_adult=false
   const [pages, setPages] = useState(1);
-  const [itemOffset, setItemOffset] = useState(0);
+  const [, setItemOffset] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+  console.log("pageCount", pageCount);
 
   const [filter, setFilter] = useState("");
   const [url, setUrl] = useState(
@@ -19,8 +21,8 @@ const MoviePage = () => {
 
   const filterDebounce = useDebounce(filter, 1000);
   const handleFilterChange = (e) => {
-    console.log(e.target.value);
     setFilter(e.target.value);
+    setPages(1);
   };
   // using UseEffect to listen when type input search, it changes URL
   useEffect(() => {
@@ -35,34 +37,27 @@ const MoviePage = () => {
     }
   }, [filterDebounce, pages]);
   const {data, error} = useSWR(url, fetcher);
-  if (!data) return null;
+  const itemsPerPage = 20;
 
   const movies = data?.results || [];
 
   const loading = !data && !error;
+  console.log("dataMovies:", data);
 
-  const {total_pages} = data;
-  console.log("total_pages:", total_pages);
+  ////
 
-  // Pagination
-
-  const itemsPerPage = 20;
-
-  // Here we use item offsets; we could also use page offsets
-  // following the API or data you're working with.
-
-  // Simulate fetching items from another resources.
-  // (This could be items from props; or items loaded in a local state
-  // from an API endpoint with useEffect and useState)
-
-  const pageCount = Math.ceil(total_pages / itemsPerPage);
+  useEffect(() => {
+    if (data || data?.total_results) {
+      setPageCount(Math.ceil(data.total_results / itemsPerPage));
+    }
+  }, [data, itemsPerPage]);
 
   // Invoke when user click to request another page.
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % total_pages;
+    const newOffset = (event.selected * itemsPerPage) % data.total_results;
 
-    setItemOffset(newOffset + 1);
-    setPages(newOffset + 1);
+    setItemOffset(newOffset);
+    setPages(event.selected + 1);
   };
 
   return (
@@ -108,58 +103,12 @@ const MoviePage = () => {
           breakLabel="..."
           nextLabel="next >"
           onPageChange={handlePageClick}
-          pageRangeDisplayed={5}
+          pageRangeDisplayed={4}
           pageCount={pageCount}
           previousLabel="< previous"
           renderOnZeroPageCount={null}
+          className="pagination"
         />
-      </div>
-
-      <div className="flex items-center justify-center mt-10 gap-x-2 hidden">
-        <span className="cursor-pointer" onClick={() => setPages(pages - 1)}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-            />
-          </svg>
-        </span>
-
-        {new Array(pageCount).fill(0).map((item, index) => {
-          return (
-            <span
-              onClick={() => setPages(index + 1)}
-              className="cursor-pointer inline-block py-1 px-2 bg-primary rounded-sm"
-            >
-              {index + 1}
-            </span>
-          );
-        })}
-
-        <span className="cursor-pointer" onClick={() => setPages(pages + 1)}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-            />
-          </svg>
-        </span>
       </div>
     </div>
   );
