@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import useSWR from "swr";
-import {fetcher} from "../config";
-import {API_KEY} from "../utils/Constant";
+import {fetcher, tmdbAPI} from "../components/apiConfig/config";
 import MovieCard from "../components/movie/MovieCard";
 import useDebounce from "../hooks/useDebounce";
 import ReactPaginate from "react-paginate";
@@ -15,9 +14,7 @@ const MoviePage = () => {
   console.log("pageCount", pageCount);
 
   const [filter, setFilter] = useState("");
-  const [url, setUrl] = useState(
-    `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=${pages}`
-  );
+  const [url, setUrl] = useState(tmdbAPI.getMoviesList("popular", pages));
 
   const filterDebounce = useDebounce(filter, 1000);
   const handleFilterChange = (e) => {
@@ -27,13 +24,9 @@ const MoviePage = () => {
   // using UseEffect to listen when type input search, it changes URL
   useEffect(() => {
     if (filterDebounce) {
-      setUrl(
-        `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${filterDebounce}&page=${pages}`
-      );
+      setUrl(tmdbAPI.getMoviesSearch(filterDebounce, pages));
     } else {
-      setUrl(
-        `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=${pages}`
-      );
+      setUrl(tmdbAPI.getMoviesList("popular", pages));
     }
   }, [filterDebounce, pages]);
   const {data, error} = useSWR(url, fetcher);

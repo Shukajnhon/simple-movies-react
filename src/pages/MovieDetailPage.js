@@ -2,23 +2,19 @@ import React, {Fragment} from "react";
 import {useParams} from "react-router-dom";
 import {Swiper, SwiperSlide} from "swiper/react";
 import useSWR from "swr";
+import {fetcher, tmdbAPI} from "../components/apiConfig/config";
 import MovieCard from "../components/movie/MovieCard";
-import {fetcher} from "../config";
+
 import {
-  API_KEY,
   URL_IMAGE,
   URL_IMAGE_ORIGINAL,
-  URL_MOVIE,
   URL_MOVIE_TRAILER,
 } from "../utils/Constant";
 
 const MovieDetailPage = () => {
   const {movieId} = useParams();
   // const movieId = params.movieId;
-  const {data} = useSWR(
-    `${URL_MOVIE}/movie/${movieId}?api_key=${API_KEY}&language=en-US`,
-    fetcher
-  );
+  const {data} = useSWR(tmdbAPI.getMoviesDetail(movieId), fetcher);
   if (!data) return null;
   const {backdrop_path, title, genres, overview} = data;
   // console.log(data);
@@ -79,10 +75,7 @@ const MovieDetailPage = () => {
 const MovieCredits = () => {
   // https://api.themoviedb.org/3/movie/{movie_id}/credits?api_key=<<api_key>>&language=en-US
   const {movieId} = useParams();
-  const {data} = useSWR(
-    `${URL_MOVIE}/movie/${movieId}/credits?api_key=${API_KEY}&language=en-US`,
-    fetcher
-  );
+  const {data} = useSWR(tmdbAPI.getMoviesMeta(movieId, "credits"), fetcher);
 
   if (!data) return null;
 
@@ -112,10 +105,7 @@ const MovieCredits = () => {
 
 const MovieVideo = () => {
   const {movieId} = useParams();
-  const {data} = useSWR(
-    `${URL_MOVIE}/movie/${movieId}/videos?api_key=${API_KEY}&language=en-US`,
-    fetcher
-  );
+  const {data} = useSWR(tmdbAPI.getMoviesMeta(movieId, "videos"), fetcher);
 
   if (!data) return null;
   const {results} = data;
@@ -156,10 +146,7 @@ const MovieSimilar = () => {
   // https://api.themoviedb.org/3/movie/{movie_id}/similar?api_key=<<api_key>>&language=en-US&page=1
 
   const {movieId} = useParams();
-  const {data} = useSWR(
-    `${URL_MOVIE}/movie/${movieId}/similar?api_key=${API_KEY}&language=en-US`,
-    fetcher
-  );
+  const {data} = useSWR(tmdbAPI.getMoviesMeta(movieId, "similar"), fetcher);
   if (!data) return null;
   const {results} = data;
   if (!results || results <= 0) return null;
