@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from "react";
 import useSWR from "swr";
 import {fetcher, tmdbAPI} from "../components/apiConfig/config";
-import MovieCard from "../components/movie/MovieCard";
+import MovieCard, {MovieCardSkeleton} from "../components/movie/MovieCard";
 import useDebounce from "../hooks/useDebounce";
 import ReactPaginate from "react-paginate";
+import {v4} from "uuid";
 const MoviePage = () => {
   // https://api.themoviedb.org/3/movie/popular?api_key=$ea38c7f2f57ff22a3e179a8eceaea2bb&language=en-US&page=1
 
@@ -81,8 +82,15 @@ const MoviePage = () => {
           </svg>
         </button>
       </div>
-      {loading && (
+      {/* {loading && (
         <div className="w-10 h-10 rounded-full border-4 border-primary border-t-transparent mx-auto mt-5 animate-spin"></div>
+      )} */}
+      {loading && (
+        <div className="grid grid-cols-4 gap-10">
+          {new Array(itemsPerPage).fill(0).map(() => {
+            return <MovieCardSkeleton key={v4()}></MovieCardSkeleton>;
+          })}
+        </div>
       )}
       <div className="grid grid-cols-4 gap-10">
         {movies.length > 0 &&
