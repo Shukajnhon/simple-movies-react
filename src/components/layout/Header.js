@@ -22,6 +22,13 @@ const Header = () => {
       >
         Login
       </NavLink>
+
+      <NavLink
+        to="register"
+        className={({isActive}) => (isActive ? "text-primary" : "")}
+      >
+        Register
+      </NavLink>
     </header>
   );
 };

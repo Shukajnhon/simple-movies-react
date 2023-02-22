@@ -9,7 +9,7 @@ const Login = () => {
         <img className="w-full h-full" src={loginImg} alt="login" />
       </div>
 
-      <div class="login-form w-2/4 h-full">
+      <div className="login-form w-2/4 h-full">
         <form
           action=""
           className="w-full h-full flex flex-col justify-center items-center animate-slideUp"
