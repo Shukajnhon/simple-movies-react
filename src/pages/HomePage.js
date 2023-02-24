@@ -1,8 +1,24 @@
+import {onAuthStateChanged} from "firebase/auth";
 import React, {Fragment} from "react";
+import {useNavigate} from "react-router-dom";
 import Banner from "../components/banner/Banner";
 import MovieList from "../components/movie/MovieList";
+import {firebaseAuth} from "../utils/firebase-config";
 
 const HomePage = () => {
+  const navigate = useNavigate();
+  // Check Current user
+  onAuthStateChanged(firebaseAuth, (currentUser) => {
+    if (currentUser) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = currentUser.uid;
+      console.log("uid:", uid);
+    } else {
+      navigate("/login");
+    }
+  });
+
   return (
     <Fragment>
       <Banner></Banner>

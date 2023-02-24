@@ -1,21 +1,28 @@
 import React, {useState} from "react";
-import {getAuth, createUserWithEmailAndPassword} from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
 import registerImg from "../assets/img/register.svg";
 import Button from "../components/button/Button";
-import Input from "../components/input/Input";
+import {firebaseAuth} from "../utils/firebase-config";
+
+import {useNavigate} from "react-router-dom";
+// import Input from "../components/input/Input";
 
 const RegisterPage = () => {
   // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  const [formValue, setFromValue] = useState({
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+  const [formValue, setFormValue] = useState({
     username: "",
     email: "",
     password: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
-    setFromValue((prev) => {
+    setFormValue((prev) => {
       const {name, value} = e.target;
       // console.log([name], value);
       return {
@@ -32,7 +39,11 @@ const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     console.log(formValue);
-    setFromValue({
+
+    // // create a new user
+    createUser();
+
+    setFormValue({
       username: "",
       email: "",
       password: "",
@@ -40,19 +51,36 @@ const RegisterPage = () => {
     setShowPassword(false);
   };
 
-  //create a new user
-  // const auth = getAuth();
-  // createUserWithEmailAndPassword(auth, email, password)
-  //   .then((userCredential) => {
-  //     // Signed in
-  //     const user = userCredential.user;
-  //     // ...
-  //   })
-  //   .catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //     // ..
-  //   });
+  // create a new user
+  const createUser = async () => {
+    try {
+      await createUserWithEmailAndPassword(
+        firebaseAuth,
+        formValue.email,
+        formValue.password
+      ).then((userCredential) => {
+        const user = userCredential.user;
+        console.log("user:", user);
+        console.log("Successfully Register!");
+      });
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log("errorCode:", errorCode);
+      console.log("errorMessage:", errorMessage);
+    }
+  };
+
+  // Check Current user
+  onAuthStateChanged(firebaseAuth, (currentUser) => {
+    if (currentUser) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = currentUser.uid;
+      console.log("uid:", uid);
+      navigate("/");
+    }
+  });
 
   return (
     <div className="flex justify-between items-center h-[30rem] w-[80%] mx-auto rounded-md bg-gray-300 shadow-[0_3px_30px_rgba(0, 0, 0, 0.5)]  text-black">

@@ -5,6 +5,9 @@ import MovieCard, {MovieCardSkeleton} from "../components/movie/MovieCard";
 import useDebounce from "../hooks/useDebounce";
 import ReactPaginate from "react-paginate";
 import {v4} from "uuid";
+import {onAuthStateChanged} from "firebase/auth";
+import {firebaseAuth} from "../utils/firebase-config";
+import {useNavigate} from "react-router-dom";
 const MoviePage = () => {
   // https://api.themoviedb.org/3/movie/popular?api_key=$ea38c7f2f57ff22a3e179a8eceaea2bb&language=en-US&page=1
 
@@ -13,6 +16,7 @@ const MoviePage = () => {
   const [, setItemOffset] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   console.log("pageCount", pageCount);
+  const navigate = useNavigate();
 
   const [filter, setFilter] = useState("");
   const [url, setUrl] = useState(tmdbAPI.getMoviesList("popular", pages));
@@ -53,6 +57,18 @@ const MoviePage = () => {
     setItemOffset(newOffset);
     setPages(event.selected + 1);
   };
+
+  // Check Current user
+  onAuthStateChanged(firebaseAuth, (currentUser) => {
+    if (currentUser) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = currentUser.uid;
+      console.log("uid:", uid);
+    } else {
+      navigate("/login");
+    }
+  });
 
   return (
     <div className="py-10 page-container">

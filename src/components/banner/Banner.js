@@ -14,7 +14,7 @@ const Banner = () => {
   const movies = data?.results || [];
 
   return (
-    <section className="banner page-container h-[500px] mb-20 overflow-hidden">
+    <section className="banner page-container h-[500px] mb-20 overflow-hidden z-10">
       <Swiper grabCursor="true" slidesPerView="auto">
         {movies.length > 0 &&
           movies.map((movie) => {
