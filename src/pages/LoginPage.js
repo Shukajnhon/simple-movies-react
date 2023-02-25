@@ -111,7 +111,7 @@ const Login = () => {
         navigate("/");
       }
     });
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="login flex my-auto justify-between items-center h-[20rem] w-[100%] mx-auto rounded-md bg-gray-300 shadow-[0_3px_30px_rgba(0, 0, 0, 0.5)]  text-black sm:h-[30rem] sm:w-[80%] md:w-[90%]">
