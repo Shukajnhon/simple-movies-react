@@ -1,10 +1,10 @@
 import React from "react";
 import useSWR from "swr";
 import {Swiper, SwiperSlide} from "swiper/react";
-import {API_KEY, URL_IMAGE_ORIGINAL} from "../../utils/Constant";
-import Button from "../button/Button";
+import {API_KEY, URL_IMAGE_ORIGINAL} from "../../utils/Constant.js";
+import Button from "../button/Button.js";
 import {useNavigate} from "react-router-dom";
-import {fetcher} from "../apiConfig/config";
+import {fetcher} from "../apiConfig/config.js";
 const Banner = () => {
   const {data} = useSWR(
     ` https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`,

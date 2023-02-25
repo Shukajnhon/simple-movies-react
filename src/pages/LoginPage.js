@@ -1,15 +1,35 @@
 import {onAuthStateChanged, signInWithEmailAndPassword} from "firebase/auth";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
+import {useForm} from "react-hook-form";
 import {useNavigate} from "react-router-dom";
 import loginImg from "../assets/img/login.svg";
-import Button from "../components/button/Button";
-import {firebaseAuth} from "../utils/firebase-config";
+import Button from "../components/button/Button.js";
+import {firebaseAuth} from "../utils/firebase-config.js";
+import {yupResolver} from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+const schema = yup
+  .object({
+    email: yup
+      .string()
+      .email("Not an email")
+      .required("Please enter your email"),
+    password: yup.string().max(15).required("Please enter your password"),
+  })
+  .required();
 
 const Login = () => {
-  const [formValue, setFormValue] = useState({
-    email: "",
-    password: "",
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: {errors, isValid},
+  } = useForm({resolver: yupResolver(schema), mode: "onChange"});
+  // const onSubmit = (data) => console.log(data);
+  // const [formValue, setFormValue] = useState({
+  //   email: "",
+  //   password: "",
+  // });
+  console.log(errors);
 
   const [success, setSuccess] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -20,100 +40,123 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleChange = (e) => {
-    setFormValue((prevValue) => {
-      const {name, value} = e.target;
+  // const handleChange = (e) => {
+  //   setFormValue((prevValue) => {
+  //     const {name, value} = e.target;
 
-      return {
-        ...prevValue,
-        [name]: value,
-      };
-    });
-  };
+  //     return {
+  //       ...prevValue,
+  //       [name]: value,
+  //     };
+  //   });
+  // };
 
-  const handleSubmit = () => {
-    console.log(formValue);
-    setFormValue((prevValue) => {
-      // SignIn
-      signIn();
+  // const handleClickSubmit = () => {
+  //   console.log(formValue);
+  //   setFormValue((prevValue) => {
+  //     // SignIn
+  //     signIn();
 
-      return {
-        ...prevValue,
-        password: "",
-      };
-    });
-  };
+  //     return {
+  //       ...prevValue,
+  //       password: "",
+  //     };
+  //   });
+  // };
 
-  const signIn = async () => {
-    try {
-      const {email, password} = formValue;
-      await signInWithEmailAndPassword(firebaseAuth, email, password).then(
-        (userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-          console.log("user:", user);
+  const handleClickSubmit = (data) => {
+    console.log("data.email", data.email);
+    console.log("data.password", data.password);
+
+    if (isValid) {
+      const signIn = async () => {
+        try {
+          await signInWithEmailAndPassword(
+            firebaseAuth,
+            data.email,
+            data.password
+          ).then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+            console.log("user:", user);
+          });
+        } catch (error) {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+
+          console.log("errorCode", errorCode);
+          console.log("errorMessage", errorMessage);
+          setSuccess(false);
+          const wrongEle = document.querySelector("#wrong");
+          wrongEle.innerText = errorCode.slice(5);
+          // console.log(wrongEle);
+          // const node = document.createElement("div");
+          // const textNode = document.createTextNode(`${errorCode}`);
+          // node.appendChild(textNode);
+          // document.getElementById("heading").appendChild(node);
         }
-      );
-    } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-
-      console.log("errorCode", errorCode);
-      console.log("errorMessage", errorMessage);
-      setSuccess(false);
-      const wrongEle = document.querySelector("#wrong");
-      wrongEle.innerText = errorCode.slice(5);
-      // const node = document.createElement("div");
-      // const textNode = document.createTextNode(`${errorCode}`);
-      // node.appendChild(textNode);
-      // document.getElementById("heading").appendChild(node);
+      };
+      signIn();
     }
   };
 
   // Check Current user
-  onAuthStateChanged(firebaseAuth, (currentUser) => {
-    if (currentUser) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
-      const uid = currentUser.uid;
-      console.log("uid:", uid);
-      navigate("/");
-    }
-  });
+  useEffect(() => {
+    onAuthStateChanged(firebaseAuth, (currentUser) => {
+      if (currentUser) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        const uid = currentUser.uid;
+        console.log("uid:", uid);
+        navigate("/");
+      }
+    });
+  }, []);
 
   return (
-    <div className="login flex justify-between items-center h-[30rem] w-[80%] mx-auto rounded-md bg-gray-300 shadow-[0_3px_30px_rgba(0, 0, 0, 0.5)]  text-black">
-      <div className="login-img w-2/4 h-full px-4 py-16 bg-primary rounded-tl-md rounded-bl-md animate-slideDown">
+    <div className="login flex my-auto justify-between items-center h-[20rem] w-[100%] mx-auto rounded-md bg-gray-300 shadow-[0_3px_30px_rgba(0, 0, 0, 0.5)]  text-black sm:h-[30rem] sm:w-[80%] md:w-[90%]">
+      <div className="login-img w-2/5 h-full px-4 py-16 bg-primary rounded-tl-md rounded-bl-md animate-slideDown sm:w-2/4 md:w-2/4">
         <img className="w-full h-full" src={loginImg} alt="login" />
       </div>
 
-      <div className="login-form w-2/4 h-full">
+      <div className="login-form w-2/3 h-full sm:w-2/4">
         <form
+          type="submit"
           action=""
           className="w-full h-full flex flex-col justify-center items-center animate-slideUp"
         >
-          <h2 id="heading" className="text-center font-bold text-3xl mb-10">
+          <h2
+            id="heading"
+            className="text-center text-2xl font-semibold sm:font-bold sm:text-3xl mb-2 sm:mb-10"
+          >
             Login
           </h2>
 
           <input
-            className="p-2 w-[70%] mb-3 rounded-md"
+            className="p-2 w-[90%] sm:w-[70%] mb-3 rounded-md"
             type="email"
             name="email"
             id="email"
             placeholder="Email"
-            value={formValue.email}
-            onChange={handleChange}
+            // value={formValue.email}
+            // onChange={handleChange}
+            {...register("email")}
           />
-          <div className="w-[70%] relative">
+          {errors?.email && (
+            <span className="text-sm  text-red-500">
+              {errors.email.message}
+            </span>
+          )}
+          <div className="w-[90%] sm:w-[70%] relative">
             <input
               className="p-2 w-full mb-3 rounded-md"
               type={`${showPassword ? "text" : "password"}`}
               name="password"
-              id="email"
+              id="password"
               placeholder="Password"
-              value={formValue.password}
-              onChange={handleChange}
+              // value={formValue.password}
+              // onChange={handleChange}
+              {...register("password")}
             />
             <span
               className="absolute right-0 -translate-x-2 translate-y-2 cursor-pointer transition-all"
@@ -121,24 +164,35 @@ const Login = () => {
             >
               {!showPassword ? <EyeInvisible></EyeInvisible> : <Eye></Eye>}
             </span>
+            {errors?.password && (
+              <p className="text-sm mb-2 text-center mx-auto text-red-500">
+                {errors.password.message}
+              </p>
+            )}
           </div>
           {!success ? (
             <span id="wrong" className="text-sm text-red-500 mb-3">
-              {/* Wrong password or email */}
+              Wrong password or email
             </span>
           ) : (
             ""
           )}
           <div className="mb-3">
-            <Button onClick={handleSubmit} className="px-12 py-2 text-white">
+            <Button
+              onClick={handleSubmit(handleClickSubmit)}
+              className="px-16 font-bold text-xl sm:px-12 sm:py-2 text-white"
+            >
               Login
             </Button>
           </div>
 
-          <a href="/forgot" className="hover:text-primary transition-all">
+          <a
+            href="/forgot"
+            className="hover:text-primary transition-all text-sm sm:text-lg"
+          >
             Forgot Password?
           </a>
-          <span>
+          <span className="text-sm sm:text-lg">
             Don't have an account?
             <a
               href="/register"

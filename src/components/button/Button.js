@@ -25,7 +25,7 @@ const Button = ({
       type={type}
       onClick={onClick}
       className={`py-3 px-6 ${
-        full ? "w-full" : ""
+        full ? "w-full" : "w-auto"
       } rounded-lg ${className}  text-white ${bgClassName} font-medium capitalize  mt-auto`}
       {...props}
     >

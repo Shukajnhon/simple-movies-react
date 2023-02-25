@@ -1,123 +1,118 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
 import registerImg from "../assets/img/register.svg";
-import Button from "../components/button/Button";
-import {firebaseAuth} from "../utils/firebase-config";
+import Button from "../components/button/Button.js";
+import {firebaseAuth} from "../utils/firebase-config.js";
 
 import {useNavigate} from "react-router-dom";
 // import Input from "../components/input/Input";
 
+import * as yup from "yup";
+import {useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+
+const schema = yup
+  .object({
+    email: yup
+      .string()
+      .email("Not an email")
+      .required("Please enter your email"),
+    password: yup.string().max(15).required("Please enter your password"),
+  })
+  .required();
+
 const RegisterPage = () => {
-  // const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const [formValue, setFormValue] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e) => {
-    setFormValue((prev) => {
-      const {name, value} = e.target;
-      // console.log([name], value);
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
-    // console.log("value:", value);
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: {errors, isValid},
+  } = useForm({resolver: yupResolver(schema), mode: "onChange"});
 
   const handleToggle = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e) => {
-    console.log(formValue);
+  const handleClickSubmit = (data) => {
+    console.log(data);
 
-    // // create a new user
-    createUser();
+    if (isValid) {
+      // // create a new user
+      const createUser = async () => {
+        try {
+          await createUserWithEmailAndPassword(
+            firebaseAuth,
+            data.email,
+            data.password
+          ).then((userCredential) => {
+            const user = userCredential.user;
+            console.log("user:", user);
+            console.log("Successfully Register!");
+          });
+        } catch (error) {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log("errorCode:", errorCode);
+          console.log("errorMessage:", errorMessage);
+        }
+      };
+      createUser();
+    }
 
-    setFormValue({
-      username: "",
-      email: "",
-      password: "",
-    });
     setShowPassword(false);
   };
 
-  // create a new user
-  const createUser = async () => {
-    try {
-      await createUserWithEmailAndPassword(
-        firebaseAuth,
-        formValue.email,
-        formValue.password
-      ).then((userCredential) => {
-        const user = userCredential.user;
-        console.log("user:", user);
-        console.log("Successfully Register!");
-      });
-    } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log("errorCode:", errorCode);
-      console.log("errorMessage:", errorMessage);
-    }
-  };
-
   // Check Current user
-  onAuthStateChanged(firebaseAuth, (currentUser) => {
-    if (currentUser) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
-      const uid = currentUser.uid;
-      console.log("uid:", uid);
-      navigate("/");
-    }
-  });
+  useEffect(() => {
+    onAuthStateChanged(firebaseAuth, (currentUser) => {
+      if (currentUser) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        const uid = currentUser.uid;
+        console.log("uid:", uid);
+        navigate("/");
+      }
+    });
+  }, []);
 
   return (
-    <div className="flex justify-between items-center h-[30rem] w-[80%] mx-auto rounded-md bg-gray-300 shadow-[0_3px_30px_rgba(0, 0, 0, 0.5)]  text-black">
-      <div className="w-2/4 h-full">
+    <div className="flex my-auto justify-between items-center h-[20rem] w-[100%] mx-auto rounded-md bg-gray-300 shadow-[0_3px_30px_rgba(0, 0, 0, 0.5)]  text-black sm:h-[30rem] sm:w-[80%]">
+      <div className="w-2/3 sm:w-2/4 h-full">
         <form
+          type="submit"
           action=""
           className="w-full h-full flex flex-col justify-center items-center animate-slideUp"
         >
-          <h2 className="text-center font-bold text-3xl mb-10 ">Register</h2>
+          <h2 className="text-center font-bold text-3xl mb-3 sm:mb-10 ">
+            Register
+          </h2>
 
           <input
-            className="p-2 w-[70%] mb-3 rounded-md"
-            type="text"
-            name="username"
-            id="username"
-            placeholder="Username"
-            value={formValue.username}
-            onChange={handleChange}
-          />
-          <input
-            className="p-2 w-[70%] mb-3 rounded-md"
+            className="p-2 w-[90%] sm:w-[70%] mb-3 rounded-md"
             type="email"
             name="email"
             id="email"
             placeholder="email"
-            value={formValue.email}
-            onChange={handleChange}
+            {...register("email")}
           />
-          <div className="w-[70%] flex justify-between items-center relative">
+          {errors?.email && (
+            <span className="text-sm  text-red-500">
+              {errors.email.message}
+            </span>
+          )}
+          <div className="w-[90%] sm:w-[70%] flex justify-between items-center relative">
             <input
               className="p-2 w-full  mb-3 rounded-md"
               type={`${showPassword ? "text" : "password"}`}
               name="password"
               id="password"
               placeholder="Password"
-              value={formValue.password}
-              onChange={handleChange}
+              {...register("password")}
             ></input>
             <span
               className="absolute right-0 -translate-x-2 -translate-y-1 cursor-pointer transition-all"
@@ -126,9 +121,14 @@ const RegisterPage = () => {
               {!showPassword ? <EyeInvisible></EyeInvisible> : <Eye></Eye>}
             </span>
           </div>
-
+          {errors?.password && (
+            <p className="text-sm  text-red-500">{errors.password.message}</p>
+          )}
           <div className="mb-3">
-            <Button onClick={handleSubmit} className="px-12 py-2 text-white">
+            <Button
+              onClick={handleSubmit(handleClickSubmit)}
+              className="px-12 py-2 text-white"
+            >
               Register
             </Button>
           </div>
@@ -141,7 +141,7 @@ const RegisterPage = () => {
         </form>
       </div>
 
-      <div className="w-2/4 h-full px-4 py-16 bg-primary rounded-tr-md rounded-br-md animate-slideDown">
+      <div className=" w-2/5 h-full px-4 py-16 bg-primary rounded-tr-md rounded-br-md animate-slideDown sm:w-2/4">
         <img className="w-full h-full" src={registerImg} alt="register" />
       </div>
     </div>

@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import useSWR from "swr";
-import {fetcher, tmdbAPI} from "../components/apiConfig/config";
-import MovieCard, {MovieCardSkeleton} from "../components/movie/MovieCard";
-import useDebounce from "../hooks/useDebounce";
+import {fetcher, tmdbAPI} from "../components/apiConfig/config.js";
+import MovieCard, {MovieCardSkeleton} from "../components/movie/MovieCard.js";
+import useDebounce from "../hooks/useDebounce.js";
 import ReactPaginate from "react-paginate";
 import {v4} from "uuid";
 import {onAuthStateChanged} from "firebase/auth";
-import {firebaseAuth} from "../utils/firebase-config";
+import {firebaseAuth} from "../utils/firebase-config.js";
 import {useNavigate} from "react-router-dom";
 const MoviePage = () => {
   // https://api.themoviedb.org/3/movie/popular?api_key=$ea38c7f2f57ff22a3e179a8eceaea2bb&language=en-US&page=1
@@ -22,18 +22,46 @@ const MoviePage = () => {
   const [url, setUrl] = useState(tmdbAPI.getMoviesList("popular", pages));
 
   const filterDebounce = useDebounce(filter, 1000);
+  console.log("filter", filter);
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
     setPages(1);
   };
-  // using UseEffect to listen when type input search, it changes URL
-  useEffect(() => {
+  const handleClickSearch = () => {
     if (filterDebounce) {
       setUrl(tmdbAPI.getMoviesSearch(filterDebounce, pages));
     } else {
       setUrl(tmdbAPI.getMoviesList("popular", pages));
     }
-  }, [filterDebounce, pages]);
+  };
+
+  // Check Current user
+  onAuthStateChanged(firebaseAuth, (currentUser) => {
+    if (currentUser) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = currentUser.uid;
+      console.log("uid:", uid);
+    } else {
+      navigate("/login");
+    }
+  });
+  // using UseEffect to listen when type input search, it changes URL
+  // useEffect(() => {
+  //   if (filterDebounce) {
+  //     setUrl(tmdbAPI.getMoviesSearch(filterDebounce, pages));
+  //   } else {
+  //     setUrl(tmdbAPI.getMoviesList("popular", pages));
+  //   }
+  // }, [filterDebounce, pages]);
+
+  useEffect(() => {
+    // handleClickSearch();
+    if (filter === "") {
+      setUrl(tmdbAPI.getMoviesList("popular", pages));
+    }
+  }, [pages, filter]);
+
   const {data, error} = useSWR(url, fetcher);
   const itemsPerPage = 20;
 
@@ -58,30 +86,21 @@ const MoviePage = () => {
     setPages(event.selected + 1);
   };
 
-  // Check Current user
-  onAuthStateChanged(firebaseAuth, (currentUser) => {
-    if (currentUser) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
-      const uid = currentUser.uid;
-      console.log("uid:", uid);
-    } else {
-      navigate("/login");
-    }
-  });
-
   return (
-    <div className="py-10 page-container">
+    <div className="page-container">
       <div className="flex mb-10">
         <div className="flex-1">
           <input
             onChange={handleFilterChange}
             type="text"
-            className="w-full p-4 bg-slate-800 outline-none text-white"
+            className="w-full p-4 bg-slate-800 outline-none text-white rounded-bl-md rounded-tl-md"
             placeholder="Search movie"
           />
         </div>
-        <button className="p-4 bg-primary text-white">
+        <button
+          className="p-4 bg-primary text-white rounded-tr-md rounded-br-md"
+          onClick={handleClickSearch}
+        >
           <svg
             className="h-6 w-6"
             xmlns="http://www.w3.org/2000/svg"
@@ -102,13 +121,13 @@ const MoviePage = () => {
         <div className="w-10 h-10 rounded-full border-4 border-primary border-t-transparent mx-auto mt-5 animate-spin"></div>
       )} */}
       {loading && (
-        <div className="grid grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-4">
           {new Array(itemsPerPage).fill(0).map(() => {
             return <MovieCardSkeleton key={v4()}></MovieCardSkeleton>;
           })}
         </div>
       )}
-      <div className="grid grid-cols-4 gap-10">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-4">
         {movies.length > 0 &&
           movies.map((movie) => {
             return <MovieCard key={movie.id} movie={movie}></MovieCard>;
@@ -117,14 +136,14 @@ const MoviePage = () => {
 
       <div className="mt-10">
         <ReactPaginate
-          breakLabel="..."
-          nextLabel="next >"
+          // breakLabel="..."
+          nextLabel=">"
           onPageChange={handlePageClick}
-          pageRangeDisplayed={4}
+          pageRangeDisplayed={2}
           pageCount={pageCount}
-          previousLabel="< previous"
+          previousLabel="<"
           renderOnZeroPageCount={null}
-          className="pagination"
+          className="pagination mb-10 p-2 gap-4 text-[18px] "
         />
       </div>
     </div>

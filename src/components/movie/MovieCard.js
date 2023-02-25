@@ -1,9 +1,9 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
-import {URL_IMAGE} from "../../utils/Constant";
-import Button from "../button/Button";
+import {URL_IMAGE} from "../../utils/Constant.js";
+import Button from "../button/Button.js";
 import {withErrorBoundary} from "react-error-boundary";
-import LoadingSkeleton from "../loading/LoadingSkeleton";
+import LoadingSkeleton from "../loading/LoadingSkeleton.js";
 
 const MovieCard = ({movie}) => {
   const {
@@ -33,7 +33,11 @@ const MovieCard = ({movie}) => {
           <span>{vote_average}</span>
         </div>
 
-        <Button full="true" onClick={() => navigate(`/movie/${id}`)}>
+        <Button
+          className=""
+          full="false"
+          onClick={() => navigate(`/movie/${id}`)}
+        >
           Watch Now
         </Button>
 

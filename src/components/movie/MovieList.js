@@ -1,8 +1,8 @@
 import React from "react";
 import {Swiper, SwiperSlide} from "swiper/react";
 import useSWR from "swr";
-import {fetcher, tmdbAPI} from "../apiConfig/config";
-import MovieCard, {MovieCardSkeleton} from "./MovieCard";
+import {fetcher, tmdbAPI} from "../apiConfig/config.js";
+import MovieCard, {MovieCardSkeleton} from "./MovieCard.js";
 
 // https://api.themoviedb.org/3/movie/now_playing?api_key=ea38c7f2f57ff22a3e179a8eceaea2bb&language=en-US&page=1
 

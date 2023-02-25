@@ -1,10 +1,10 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
-import Navbar from "./Navbar";
+// import {NavLink} from "react-router-dom";
+import Navbar from "./Navbar.js";
 
 const Header = () => {
   return (
-    <header className="header flex items-center justify-center gap-x-5 text-white py-10 mb-10 relative">
+    <header className="header flex items-center justify-center gap-x-5 text-white py-10 relative">
       <Navbar></Navbar>
 
       {/* <NavLink

@@ -1,6 +1,6 @@
 import React, {Fragment} from "react";
 import {Outlet} from "react-router-dom";
-import Header from "./Header";
+import Header from "./Header.js";
 
 const Main = () => {
   return (

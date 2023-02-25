@@ -25,6 +25,18 @@ module.exports = {
         slideUp: "slideUp 0.5s ease-in-out",
       },
     },
+
+    // breakpoint
+    // screens: {
+    // sm: "270px",
+    // => @media (min-width: 370px) { ... }
+
+    // md: "639",
+    // => @media (min-width: 639px) { ... }
+
+    // lg: "1440px",
+    // => @media (min-width: 1440px) { ... }
+    // },
   },
   plugins: [],
 };

@@ -2,8 +2,8 @@ import {sendPasswordResetEmail} from "firebase/auth";
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import forgot from "../assets/img/forgot.svg";
-import Button from "../components/button/Button";
-import {firebaseAuth} from "../utils/firebase-config";
+import Button from "../components/button/Button.js";
+import {firebaseAuth} from "../utils/firebase-config.js";
 
 const ForgotPage = () => {
   const [email, setEmail] = useState("");
@@ -45,17 +45,17 @@ const ForgotPage = () => {
   };
 
   return (
-    <div className="flex justify-between items-center h-[30rem] w-[80%] mx-auto rounded-md bg-gray-300 shadow-[0_3px_30px_rgba(0, 0, 0, 0.5)]  text-black">
-      <div className="w-2/4 h-full relative">
+    <div className="flex my-auto justify-between items-center h-[20rem] w-[100%] mx-auto rounded-md bg-gray-300 shadow-[0_3px_30px_rgba(0, 0, 0, 0.5)]  text-black sm:h-[30rem] sm:w-[80%]">
+      <div className="w-2/3 sm:w-2/4 h-full relative">
         <form
           action=""
           className="w-full h-full flex flex-col justify-center items-center animate-slideUp"
         >
-          <h2 className="text-center font-bold text-3xl mb-10">
+          <h2 className="text-center font-bold text-3xl mb-4 sm:mb-10">
             Reset Password
           </h2>
           <input
-            className="p-2 w-[70%] mb-3 rounded-md"
+            className="p-2 w-[90%] sm:w-[70%] mb-3 rounded-md"
             type="email"
             name="email"
             id="email"
@@ -65,7 +65,10 @@ const ForgotPage = () => {
           />
 
           <div className="mb-3">
-            <Button onClick={handleSubmit} className="px-12 py-2 text-white">
+            <Button
+              onClick={handleSubmit}
+              className="px-6 sm:px-12 sm:py-2 text-white text-sm sm:text-base"
+            >
               Reset Password
             </Button>
           </div>
@@ -96,7 +99,7 @@ const ForgotPage = () => {
         </div>
       </div>
 
-      <div className="w-2/4 h-full px-4 py-16 bg-primary rounded-tr-md rounded-br-md animate-slideDown">
+      <div className="w-2/5 sm:w-2/4 h-full px-4 py-16 bg-primary rounded-tr-md rounded-br-md animate-slideDown">
         <img className="w-full h-full" src={forgot} alt="forgot" />
       </div>
     </div>

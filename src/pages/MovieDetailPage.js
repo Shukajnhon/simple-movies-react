@@ -2,14 +2,14 @@ import React, {Fragment} from "react";
 import {useParams} from "react-router-dom";
 import {Swiper, SwiperSlide} from "swiper/react";
 import useSWR from "swr";
-import {fetcher, tmdbAPI} from "../components/apiConfig/config";
-import MovieCard from "../components/movie/MovieCard";
+import {fetcher, tmdbAPI} from "../components/apiConfig/config.js";
+import MovieCard from "../components/movie/MovieCard.js";
 
 import {
   URL_IMAGE,
   URL_IMAGE_ORIGINAL,
   URL_MOVIE_TRAILER,
-} from "../utils/Constant";
+} from "../utils/Constant.js";
 
 const MovieDetailPage = () => {
   const {movieId} = useParams();

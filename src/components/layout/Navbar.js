@@ -1,13 +1,19 @@
 import React, {useEffect, useState} from "react";
 import logo from "../../assets/logo/logoMovies.png";
 import {NavLink, useNavigate} from "react-router-dom";
-import {FaSearch, FaRegBell, FaUser, FaSignOutAlt} from "react-icons/fa";
-import {firebaseAuth} from "../../utils/firebase-config";
+import {
+  // FaSearch,
+  FaRegBell,
+  FaUser,
+  FaSignOutAlt,
+} from "react-icons/fa/index.esm.js";
+import {firebaseAuth} from "../../utils/firebase-config.js";
 import {onAuthStateChanged, signOut} from "firebase/auth";
+// import SearchMovies from "../search/SearchMovies";
 
 const Navbar = () => {
-  const [showSearch, setShowSearch] = useState(false);
-  const [inputHover, setInputHover] = useState(false);
+  // const [showSearch, setShowSearch] = useState(false);
+  // const [inputHover, setInputHover] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLogOut, setIsLogOut] = useState(true);
 
@@ -61,7 +67,7 @@ const Navbar = () => {
     <nav
       className={`flex h-[4rem] w-full items-center justify-between fixed z-[9999]  top-0 left-0 right-0 pl-[6%] pr-[6%] ${
         isScrolled ? "bg-black" : "bg-[rgba(0,0,0,0.2)]"
-      }`}
+      } sm:`}
     >
       <div className="nav-left flex items-center justify-between gap-10">
         <div className="logo h-[50px] w-full">
@@ -88,7 +94,7 @@ const Navbar = () => {
         <div
           className={`nav-right flex items-center justify-between gap-5 text-[20px]`}
         >
-          <div
+          {/* <div
             className={`search cursor-pointer flex items-center rounded-sm ${
               showSearch
                 ? "border border-1 border-solid border-[rgba(255,255,255,0.4)]"
@@ -117,7 +123,7 @@ const Navbar = () => {
                 setInputHover(false);
               }}
             />
-          </div>
+          </div> */}
           <FaRegBell className="cursor-pointer "></FaRegBell>
           <div className="user relative group">
             <FaUser className="cursor-pointer "></FaUser>
