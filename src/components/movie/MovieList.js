@@ -41,7 +41,22 @@ const MovieList = ({type = "now_playing"}) => {
         </>
       )}
       {!isLoading && (
-        <Swiper grabCursor={"true"} spaceBetween={40} slidesPerView={"auto"}>
+        <Swiper
+          breakpoints={{
+            1024: {
+              slidesPerView: 4,
+            },
+            768: {
+              slidesPerView: 3,
+            },
+            640: {
+              slidesPerView: 2,
+            },
+          }}
+          grabCursor={"true"}
+          spaceBetween={40}
+          slidesPerView={"auto"}
+        >
           {movies.length > 0 &&
             movies.map((movie) => {
               return (

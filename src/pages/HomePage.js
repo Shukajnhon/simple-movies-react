@@ -27,24 +27,24 @@ const HomePage = () => {
     <Fragment>
       <Banner></Banner>
       {/*Movies-layout Now Playing Section */}
-      <section className="movies-layout page-container pb-20">
-        <h2 className="capitalize text-white text-3xl mb-10 font-bold">
+      <section className="pb-20 movies-layout page-container">
+        <h2 className="mb-4 text-xl font-bold text-white capitalize md:mb-10 md:text-3xl">
           Now playing
         </h2>
         <MovieList type="now_playing"></MovieList>
       </section>
 
       {/*Movies-layout top rated Section */}
-      <section className="movies-layout page-container pb-20 ">
-        <h2 className="capitalize text-white text-3xl mb-10 font-bold">
+      <section className="pb-20 movies-layout page-container ">
+        <h2 className="mb-4 text-xl font-bold text-white capitalize md:mb-10 md:text-3xl">
           Top rated
         </h2>
         <MovieList type="top_rated"></MovieList>
       </section>
 
       {/*Movies-layout popular Section */}
-      <section className="movies-layout page-container pb-20">
-        <h2 className="capitalize text-white text-3xl mb-10 font-bold">
+      <section className="pb-20 movies-layout page-container">
+        <h2 className="mb-4 text-xl font-bold text-white capitalize md:mb-10 md:text-3xl">
           Trending
         </h2>
         <MovieList type="upcoming"></MovieList>
