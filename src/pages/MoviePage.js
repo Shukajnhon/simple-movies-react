@@ -35,17 +35,18 @@ const MoviePage = () => {
     }
   };
 
+  // turn off check Current user
   // Check Current user
-  onAuthStateChanged(firebaseAuth, (currentUser) => {
-    if (currentUser) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
-      const uid = currentUser.uid;
-      console.log("uid:", uid);
-    } else {
-      navigate("/login");
-    }
-  });
+  // onAuthStateChanged(firebaseAuth, (currentUser) => {
+  //   if (currentUser) {
+  //     // User is signed in, see docs for a list of available properties
+  //     // https://firebase.google.com/docs/reference/js/firebase.User
+  //     const uid = currentUser.uid;
+  //     console.log("uid:", uid);
+  //   } else {
+  //     navigate("/login");
+  //   }
+  // });
   // using UseEffect to listen when type input search, it changes URL
   // useEffect(() => {
   //   if (filterDebounce) {
@@ -93,16 +94,16 @@ const MoviePage = () => {
           <input
             onChange={handleFilterChange}
             type="text"
-            className="w-full p-4 bg-slate-800 outline-none text-white rounded-bl-md rounded-tl-md"
+            className="w-full p-4 text-white outline-none bg-slate-800 rounded-bl-md rounded-tl-md"
             placeholder="Search movie"
           />
         </div>
         <button
-          className="p-4 bg-primary text-white rounded-tr-md rounded-br-md"
+          className="p-4 text-white bg-primary rounded-tr-md rounded-br-md"
           onClick={handleClickSearch}
         >
           <svg
-            className="h-6 w-6"
+            className="w-6 h-6"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -118,16 +119,16 @@ const MoviePage = () => {
         </button>
       </div>
       {/* {loading && (
-        <div className="w-10 h-10 rounded-full border-4 border-primary border-t-transparent mx-auto mt-5 animate-spin"></div>
+        <div className="w-10 h-10 mx-auto mt-5 border-4 rounded-full border-primary border-t-transparent animate-spin"></div>
       )} */}
       {loading && (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {new Array(itemsPerPage).fill(0).map(() => {
             return <MovieCardSkeleton key={v4()}></MovieCardSkeleton>;
           })}
         </div>
       )}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2  md:grid-cols-3  lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {movies.length > 0 &&
           movies.map((movie) => {
             return <MovieCard key={movie.id} movie={movie}></MovieCard>;

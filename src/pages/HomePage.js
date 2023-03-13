@@ -8,20 +8,22 @@ import MovieList from "../components/movie/MovieList.js";
 import {firebaseAuth} from "../utils/firebase-config.js";
 
 const HomePage = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+
+  //turn off check Current user
   // Check Current user
-  useEffect(() => {
-    onAuthStateChanged(firebaseAuth, (currentUser) => {
-      if (currentUser) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        const uid = currentUser.uid;
-        console.log("uid:", uid);
-      } else {
-        navigate("/login");
-      }
-    });
-  }, [navigate]);
+  // useEffect(() => {
+  //   onAuthStateChanged(firebaseAuth, (currentUser) => {
+  //     if (currentUser) {
+  //       // User is signed in, see docs for a list of available properties
+  //       // https://firebase.google.com/docs/reference/js/firebase.User
+  //       const uid = currentUser.uid;
+  //       console.log("uid:", uid);
+  //     } else {
+  //       navigate("/login");
+  //     }
+  //   });
+  // }, [navigate]);
 
   return (
     <Fragment>
